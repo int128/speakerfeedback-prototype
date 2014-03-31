@@ -1,25 +1,29 @@
 package controllers
 
+import akka.actor._
+import akka.pattern.ask
+import akka.util.Timeout
 import play.api.libs.iteratee._
+import play.api.libs.concurrent._
 import play.api.mvc.WebSocket
+import play.api.Play.current
 import play.api.mvc.Controller
 import play.api.mvc.Action
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import models._
 
 object Application extends Controller {
+
+  implicit val timeout = Timeout(1)
+
+  val board = Akka.system.actorOf(Props[Board])
 
   def index = Action { implicit request =>
     Ok(views.html.index(request))
   }
 
-  def pollSocket(pollId: String) = WebSocket.using[String] { request =>
-    val (out, channel) = Concurrent.broadcast[String]
-
-    val in = Iteratee.foreach[String] {
-      message => channel.push(message)
-    }
-
-    (in, out)
+  def pollSocket(pollId: String) = WebSocket.async { request =>
+    val future = board ? Begin()
+    future.mapTo[(Iteratee[String, _], Enumerator[String])]
   }
 
 }
