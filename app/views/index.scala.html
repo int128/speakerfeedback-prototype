@@ -1,7 +1,26 @@
-@(message: String)
+@(implicit request: RequestHeader)
 
-@main("Welcome to Play") {
+@main("SpeakerFeedback") {
 
-    @play20.welcome(message)
+<form id="feedback">
+    <input id="message" placeholder="Say that hip hop shit" />
+    <button type="submit">Say</button>
+</form>
+
+<ul id="messages"></ul>
+
+<script type="text/javascript">
+$(function () {
+    var ws = new WebSocket("@routes.Application.pollSocket("example").webSocketURL()");
+    ws.onmessage = function(message) {
+        $('<li />').text(message.data).appendTo('#messages')
+    };
+    $('#feedback').submit(function(){
+        ws.send($('#message').val());
+        $('#message').val("").focus();
+        return false;
+    });
+});
+</script>
 
 }
