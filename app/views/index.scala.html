@@ -2,25 +2,20 @@
 
 @main("SpeakerFeedback") {
 
-<form id="feedback">
-    <input id="message" placeholder="Say that hip hop shit" />
-    <button type="submit">Say</button>
-</form>
+<div class="container">
+    <h1>Speaker Feedback</h1>
+    <p class="lead">Feedback your feeling.</p>
 
-<ul id="messages"></ul>
+    <form id="feedback">
+        <input id="message" placeholder="Say that hip hop shit" />
+        <button type="submit">Say</button>
+    </form>
 
-<script type="text/javascript">
-$(function () {
-    var ws = new WebSocket("@routes.Application.pollSocket("example").webSocketURL()");
-    ws.onmessage = function(message) {
-        $('<li />').text(message.data).appendTo('#messages')
-    };
-    $('#feedback').submit(function(){
-        ws.send($('#message').val());
-        $('#message').val("").focus();
-        return false;
-    });
-});
+    <ul id="messages"></ul>
+</div>
+
+<script>
+var ws = new WebSocket("@routes.Application.pollSocket("example").webSocketURL()");
 </script>
 
 }
