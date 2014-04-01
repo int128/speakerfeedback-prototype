@@ -13,12 +13,17 @@ import models._
 
 object Application extends Controller {
 
-  implicit val timeout = Timeout(1)
+  implicit val timeout = Timeout(10)
 
   val board = Akka.system.actorOf(Props[Board])
 
   def index = Action { implicit request =>
-    Ok(views.html.index(request))
+    Ok(views.html.index(Poll(Seq(
+      Item("A", "Excellent"),
+      Item("B", "Good"),
+      Item("C", "Bad"),
+      Item("D", "F*ck")
+    ))))
   }
 
   def pollSocket(pollId: String) = WebSocket.async { request =>

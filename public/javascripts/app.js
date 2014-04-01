@@ -1,10 +1,14 @@
 $(function () {
     ws.onmessage = function(message) {
-        $('<li />').text(message.data).appendTo('#messages')
+        var itemId = message.data;
+        $('.poll .item .count').each(function () {
+            if ($(this).data('itemId') == itemId) {
+                $(this).text(parseInt($(this).text()) + 1);
+            }
+        });
     };
-    $('#feedback').submit(function(){
-        ws.send($('#message').val());
-        $('#message').val("").focus();
-        return false;
+    $('.poll .item button').click(function(){
+        var itemId = $(this).data('itemId');
+        ws.send(itemId);
     });
 });

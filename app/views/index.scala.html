@@ -1,17 +1,33 @@
-@(implicit request: RequestHeader)
+@(poll: models.Poll)(implicit request: RequestHeader)
 
 @main("SpeakerFeedback") {
 
 <div class="container">
-    <h1>Speaker Feedback</h1>
-    <p class="lead">Feedback your feeling.</p>
+    <div class="page-header">
+        <h1>Feedback</h1>
+    </div>
+    <p class="lead">Please send me your feedback.</p>
 
-    <form id="feedback">
-        <input id="message" placeholder="Say that hip hop shit" />
-        <button type="submit">Say</button>
-    </form>
+    <div class="poll">
+        @for(item <- poll.items) {
+        <div class="row item">
+            <div class="col-md-3">
+                <button type="button" class="btn btn-lg btn-block btn-default" data-item-id="@item.id">
+                    @item.title
+                </button>
+            </div>
+            <div class="col-md-1">
+                <div class="count" data-item-id="@item.id">0</div>
+            </div>
+        </div>
+        }
+    </div>
+</div>
 
-    <ul id="messages"></ul>
+<div id="footer">
+    <div class="container">
+        <p class="text-muted">&copy hidetake.org, 2014.</p>
+    </div>
 </div>
 
 <script>
