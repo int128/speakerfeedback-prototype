@@ -17,17 +17,19 @@ object Application extends Controller {
 
   val board = Akka.system.actorOf(Props[Board])
 
+  val poll = Poll(Seq(
+    Item("A", "Excellent"),
+    Item("B", "Good"),
+    Item("C", "Bad"),
+    Item("D", "F*ck")
+  ))
+
   def index = Action { implicit request =>
-    Ok(views.html.index(Poll(Seq(
-      Item("A", "Excellent"),
-      Item("B", "Good"),
-      Item("C", "Bad"),
-      Item("D", "F*ck")
-    ))))
+    Ok(views.html.index(poll))
   }
 
   def pollSocket(pollId: String) = WebSocket.async { request =>
-    val future = board ? Begin()
+    val future = board ? Begin(poll)
     future.mapTo[(Iteratee[String, _], Enumerator[String])]
   }
 

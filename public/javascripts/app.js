@@ -1,9 +1,11 @@
 $(function () {
     ws.onmessage = function(message) {
-        var itemId = message.data;
+        var e = message.data.split(/,/);
+        var itemId = e[0];
+        var count = e[1];
         $('.poll .item .count').each(function () {
             if ($(this).data('itemId') == itemId) {
-                $(this).text(parseInt($(this).text()) + 1);
+                $(this).text(count);
             }
         });
     };
